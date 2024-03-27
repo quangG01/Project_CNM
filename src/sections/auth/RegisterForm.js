@@ -1,27 +1,31 @@
 import React, { useState } from "react";
 import * as Yup from 'yup';
-import {useForm} from 'react-hook-form';
-import {Link as RouterLink} from "react-router-dom"
-import { Alert, Button, IconButton, InputAdornment, Link, Stack } from "@mui/material";
-import {yupResolver} from "@hookform/resolvers/yup";
+import {useForm} from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup";
 import FormProvider from "../../components/hook-form/FormProvider";
 import { RHFTextField } from "../../components/hook-form";
-import { Visibility , VisibilityOff  } from "@mui/icons-material";
-const LoginForm = () =>{
+import { Alert,Button,IconButton,InputAdornment,Stack } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+
+const RegisterForm = () => {
     const [showPassword , setShowPassword] = useState(false);
     
-    const LoginSchema = Yup.object().shape({
+    const RegisterSchema = Yup.object().shape({
+        firstName : Yup.string().required("Nhập họ"),
+        lastName : Yup.string().required("Nhập tên"),
         email : Yup.string().required("Nhập đúng Email"),
         password:  Yup.string().required("Nhập đúng mật khẩu"),
     });
 
     const defaultValues = {
+        firstName :"",
+        lastName:"",
         email: "demo@gmail.com",
         password:"demo123"
     }
 
     const methods  = useForm({
-        resolver : yupResolver(LoginSchema),
+        resolver : yupResolver(RegisterSchema),
         defaultValues,
     });
 
@@ -41,16 +45,20 @@ const LoginForm = () =>{
             })
 
         }
-    }
+    };
     return (
-    
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3}>
-            {!!errors.afterSumit && <Alert severity="error">{errors.afterSumit.message}</Alert>}
 
-        <RHFTextField name="email" label="Email"/>
-        <RHFTextField name="password" label = "Password" type={showPassword ? "text" :"password"} 
-        InputProps ={{
+        <Stack spacing={3}>
+            {!!errors.afterSumit && (<Alert severity="error">{errors.afterSumit.message}</Alert>)}
+
+        
+            <RHFTextField name="firstName" label="Tên" />
+            <RHFTextField name="lastName" label="Họ" />
+        <Stack direction={{xs:"column",sm:"row"}} spacing ={2}>
+           
+            <RHFTextField name="email" label="Email" />
+            <RHFTextField name="password"  type={showPassword ? "text" :"password"}  label="Password" InputProps ={{
             endAdornment:(
                 <InputAdornment>
                     <IconButton onClick={() => {
@@ -60,18 +68,16 @@ const LoginForm = () =>{
                     </IconButton>
                 </InputAdornment>
             )
-        }}/>
+        }} />
         
         </Stack>
-        <Stack alignItems={"flex-end"} sx= {{my:2}}>
-            <Link component={RouterLink} to="/auth/reset-Password" varient = "body2" color = "inherit" underline="always">
-                Quên Mật Khẩu?
-            </Link>
-        </Stack>
         <Button fullWidth color="inherit" size="large" type="submit" variant="contained" >
-            Đăng nhập
+            Đăng ký
         </Button>
-    </ FormProvider>
-    );
-};
-export default LoginForm;
+        </Stack>
+        
+        
+    </FormProvider>
+    )
+}
+export default RegisterForm;
